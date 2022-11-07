@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const UserSchema = new mongoose.Schema({
+const LibarySchema = new mongoose.Schema = {
     username:{
         type:String,
         required:true,
@@ -14,8 +14,6 @@ const UserSchema = new mongoose.Schema({
     isEditor:{
         type:Boolean
     },
-    password:{
-        type:String
-    }})
+}
 
-module.exports = User = mongoose.model('User', UserSchema)
+module.exports = User = mongoose.model('Libary', LibarySchema)

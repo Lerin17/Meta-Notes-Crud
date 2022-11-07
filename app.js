@@ -18,10 +18,19 @@ const requestListiner = (req,res) => {
 }
 
 
+const authorizeRoute = require('./routes/authorize')
+
 
 const app = express()
 
 const server = require('http').createServer(app)
+
+
+
+// const userRoutes = require('./routes')
+
+const cors = require('cors')
+const bodyParser = require('body-parser')
 
 const io = require('socket.io')(server, {
     cors: {
@@ -35,6 +44,8 @@ app.get('/', function (req, res) {
     res.send('i am')
     });
 
+app.use('/api/authorize', authorizeRoute)
+
 
 io.on('connection', (socket) => {
     socket.emit('me', socket.id)
@@ -42,8 +53,6 @@ io.on('connection', (socket) => {
     
 
 
-const cors = require('cors')
-const bodyParser = require('body-parser')
 
 
 

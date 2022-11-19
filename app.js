@@ -19,11 +19,14 @@ const requestListiner = (req,res) => {
 
 
 const authorizeRoute = require('./routes/authorize')
+const libaryRoute =  require('./routes/libaryRoute')
+const teamRoute = require('./routes/teamRoute')
 
 
 const app = express()
 
 const server = require('http').createServer(app)
+
 
 
 
@@ -38,24 +41,51 @@ const io = require('socket.io')(server, {
         methods: ['GET', 'POST']
     }
 })
+
 const port = process.env.PORT || 5024
 
 app.get('/', function (req, res) {
     res.send('i am')
     });
 
+
+    
+app.use((req,res, next)=>{
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Content-Type,"
+    );
+    next();
+})
+
+    // app.use('/api/authorize', authorizeRoute)
+
+// app.use(cors())    
+app.use(bodyParser.json()) // handle json data
+app.use(bodyParser.urlencoded({ extended: true }))
+
+// app.use((req,res, next)=>{
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+//     res.header(
+//       "Access-Control-Allow-Headers",
+//       "Content-Type,"
+//     );
+//     next();
+// })
+// app.use((cors()))
+
 app.use('/api/authorize', authorizeRoute)
+app.use('/api/libary', libaryRoute)
+app.use('/api/teams/', teamRoute)
+
 
 
 io.on('connection', (socket) => {
     socket.emit('me', socket.id)
 })
-    
-
-
-
-
-
 
 server.listen(port, ()=>{
     console.log(`listening at ${port}`)

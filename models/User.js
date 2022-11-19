@@ -11,11 +11,10 @@ const UserSchema = new mongoose.Schema({
         required:true,
         unique:true 
     },
-    isEditor:{
-        type:Boolean
-    },
     password:{
-        type:String
+        type:String,
+        required:true,
+        unique:true 
     }})
 
 module.exports = User = mongoose.model('User', UserSchema)

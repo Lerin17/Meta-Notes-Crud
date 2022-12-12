@@ -22,19 +22,31 @@ router.post('/createuser', async (req, res) => {
     const newUser = new User({
         username:req.body.username,
         email: req.body.email,
-        isEditor: req.body.Adminrole,
         password: CryptoJS.AES.encrypt(req.body.password, process.env.PASS_SEC).toString(),
     })
 
-    // const newLibary = new Libary({
-
-    // })
+  
 
     try {
         const savedUser = await newUser.save()
-        res.status(201).json(savedUser)
+
+        const newUserLibary = new Libary({
+            Profile: {
+                name:req.body.username,
+                bookShared:0
+            },
+            booksReceivedArray: [],
+            sharedWriters:[],
+            sharedBooks:[],
+            userid:savedUser._id
+        })
+
+        const savedsUserLibary = await newUserLibary.save()
+
+        res.status(200).json({savedUser, savedsUserLibary})
         
     } catch (error) {
+        console.log(error)
         // console.log(error)
         res.status(500).json({message: 'SignUp unsuccessful'})
     }

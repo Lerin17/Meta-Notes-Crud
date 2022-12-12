@@ -9,7 +9,6 @@ const LibarySchema = new mongoose.Schema({
 
 
     booksReceivedArray:[
-        //books shared to you
         {
             bookName:{type:String,
                 required:true},
@@ -50,7 +49,9 @@ const LibarySchema = new mongoose.Schema({
                 required:true,
             default:false}
             }],
-            bookContent:{}
+            bookContent:{type:Object,
+            required:true
+            }
 
         },
     ],

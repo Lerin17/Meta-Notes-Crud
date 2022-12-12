@@ -148,73 +148,7 @@ router.delete('/removeTeam/:writerid/:userid', async(req, res) => {
 })
 
 
-//add book to shared books
-router.post('/addBook/:userid', async (req, res) => {
 
-    // const userLibary = await Libary.find({'userid': req.params.userid})
-
-    // const user = await User.find({'_id': req.params.userid})
-
-
-        const writersForBook = req.body.writers
-
-       const writersArray = []
-
-
-
-            function getWriters(params) {
-                return new Promise(function (resolve, reject){
-
-                    // console.log('running')
-
-                    writersForBook.map(async(item) => {
-
-                        
-
-                        const writerData = await User.findById(item.writerid)
-        
-                        console.log(writerData,'writerData')
-        
-        
-                         writersArray.push({
-                                 name:writerData.username,
-                                writerid:writerData._id
-                        })
-
-                        if( writersArray.length == writersForBook.length){
-
-                            resolve( writersArray)
-                        }
-            
-                })
-                })
-            }
-
-            getWriters().then( async (data) => {
-                console.log(data, 'data')
-
-                try {
-                    const updatedUserLibary = await Libary.findOneAndUpdate({'userid':req.params.userid}, {$push: {sharedBooks:{
-                        name:req.body.name,
-                        bookid:req.body.bookid,
-                        writers:[...data],
-                        bookContent:req.body.bookContent
-                    }}},{new:true})
-
-                    res.status(200).json(updatedUserLibary)
-                    
-                } catch (error) {
-                    res.status(500).json(error) 
-                }
-               
-
-                                
-    
-            }).catch((error) => {
-                res.status(500).json(error)
-            })
-            
-})
 
 //add writers to Books
 //Incoming

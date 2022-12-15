@@ -174,12 +174,20 @@ router.put('/addWritersToBook/:bookid/:userid/', async (req, res) => {
 
                         const writerData = await User.findById(item.writerid)
 
+                        const writerDatax = await Libary.findOneAndUpdate({'userid': item.writerid}, {
+                            $push: {booksReceivedArray: {
+                                bookName:req.body.bookName,
+                                From: req.body.senderData,
+                                bookContent: req.body.bookData                               
+                            }}
+                        })
+
                         console.log('cowwer')
                         
        
                          writersArray.push({
-                                 name:writerData.username,
-                                writerid:writerData._id
+                                 name:writerDatax.Profile.name,
+                                writerid:writerDatax.userid
                         })
 
                         // console.log(writersArray, 'writersArray')

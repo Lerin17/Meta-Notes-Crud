@@ -15,8 +15,8 @@ const LibarySchema = new mongoose.Schema({
            
             isEditor: {type:Boolean,
             required:true,
-            default:true},
-            From: {type:String,
+            default:false},
+            From: {type:Object,
             required:true},
             bookContent: {
                 type:Object,

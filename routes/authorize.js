@@ -38,7 +38,8 @@ router.post('/createuser', async (req, res) => {
             booksReceivedArray: [],
             sharedWriters:[],
             sharedBooks:[],
-            userid:savedUser._id
+            userid:savedUser._id,
+            myLibaryBooksArray:[]
         })
 
         const savedsUserLibary = await newUserLibary.save()

@@ -6,8 +6,12 @@ const LibarySchema = new mongoose.Schema({
         name:{type:String},
         bookShared:{type:Number}
     },
-
-
+    myLibaryBooksArray:  {
+        type:Object,
+        required:true
+    }
+      ,
+    
     booksReceivedArray:[
         {
             bookName:{type:String,
@@ -18,10 +22,15 @@ const LibarySchema = new mongoose.Schema({
             default:false},
             From: {type:Object,
             required:true},
-            bookContent: {
+            bookData: {
                 type:Object,
                 required:true
             },
+            Accepted: {
+                type:Boolean,
+                required: true,
+                default: false
+            }
         },
     ],
     sharedWriters:[
@@ -49,7 +58,7 @@ const LibarySchema = new mongoose.Schema({
                 required:true,
             default:false}
             }],
-            bookContent:{type:Object,
+            bookData:{type:Object,
             required:true
             }
 

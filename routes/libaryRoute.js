@@ -8,75 +8,100 @@ const User = require('../models/User')
 router.post('/addBook/:userid', async (req, res) => {
 
 
-    const writersForBook = req.body.writers
+//     const writersForBook = req.body.writers
 
-   const writersArray = []
+//    const writersArray = []
 
+try {
+    const UserLibary = await Libary.find({'userid': req.params.userid})
 
-        if(!writersArray.length){
-            const updatedUserLibary = await Libary.findOneAndUpdate({'userid':req.params.userid}, {$push: {sharedBooks:{
-                name:req.body.name,
-                bookid:req.body.bookid,
-                writers:[],
-                bookContent:req.body.bookContent
-            }}},{new:true})
+    // console.log(UserLibary,' uss')
+    // console.log(UserLibary.sharedBooks,' userlIbary')
 
-            res.status(200).json(updatedUserLibary)
-            return
-        }
+    const idsOfUserSharedBooks = UserLibary[0].sharedBooks.map(item => (item.bookid))
+
+console.log(idsOfUserSharedBooks, 'ids')
+
+console.log(req.body.bookData, 'bookData')
+
+    const isBookIdAlreadyPresent = idsOfUserSharedBooks.includes(req.body.bookid)
+
+    if(isBookIdAlreadyPresent){
+        res.status(500).json({message: 'Book already available in sharedBooks'})
+        return
+    }else{
+        const updatedUserLibary = await Libary.findOneAndUpdate({'userid':req.params.userid}, {$push: {sharedBooks:{
+            name:req.body.name,
+            bookid:req.body.bookid,
+            writers:[],
+            bookData:req.body.bookData
+        }}},{new:true})
+
+        res.status(200).json(updatedUserLibary)
+        return
+    }
+} catch (error) {
+ res.status(500)   
+}
+
+   
+
+  
+       
+        
  
 
-        function getWriters(params) {
-            return new Promise(function (resolve, reject){
+        // function getWriters(params) {
+        //     return new Promise(function (resolve, reject){
 
-                // console.log('running')
+        //         // console.log('running')
 
-                writersForBook.map(async(item) => {
+        //         writersForBook.map(async(item) => {
 
                     
 
-                    const writerData = await User.findById(item.writerid)
+        //             const writerData = await User.findById(item.writerid)
     
-                    console.log(writerData,'writerData')
+        //             console.log(writerData,'writerData')
     
     
-                     writersArray.push({
-                             name:writerData.username,
-                            writerid:writerData._id
-                    })
+        //              writersArray.push({
+        //                      name:writerData.username,
+        //                     writerid:writerData._id
+        //             })
 
-                    if( writersArray.length == writersForBook.length){
+        //             if( writersArray.length == writersForBook.length){
 
-                        resolve( writersArray)
-                    }
+        //                 resolve( writersArray)
+        //             }
         
-            })
-            })
-        }
+        //     })
+        //     })
+        // }
 
-        getWriters().then( async (data) => {
-            console.log(data, 'data')
+        // getWriters().then( async (data) => {
+        //     console.log(data, 'data')
 
-            try {
-                const updatedUserLibary = await Libary.findOneAndUpdate({'userid':req.params.userid}, {$push: {sharedBooks:{
-                    name:req.body.name,
-                    bookid:req.body.bookid,
-                    writers:[...data],
-                    bookContent:req.body.bookContent
-                }}},{new:true})
+        //     try {
+        //         const updatedUserLibary = await Libary.findOneAndUpdate({'userid':req.params.userid}, {$push: {sharedBooks:{
+        //             name:req.body.name,
+        //             bookid:req.body.bookid,
+        //             writers:[...data],
+        //             bookContent:req.body.bookContent
+        //         }}},{new:true})
 
-                res.status(200).json(updatedUserLibary)
+        //         res.status(200).json(updatedUserLibary)
                 
-            } catch (error) {
-                res.status(500).json(error) 
-            }
+        //     } catch (error) {
+        //         res.status(500).json(error) 
+        //     }
            
 
                             
 
-        }).catch((error) => {
-            res.status(500).json(error)
-        })
+        // }).catch((error) => {
+        //     res.status(500).json(error)
+        // })
         
 })
 
@@ -135,6 +160,23 @@ router.delete('/removeBook/:userid/:bookid', async (req, res) => {
     }
 
     
+})
+
+router.post('/saveLibaryArray/:userid', async (req, res) => {
+
+    const userid = req.params.userid
+    
+
+    try {
+        const updatedUserLibary = await Libary.findOneAndUpdate ({'userid': userid}, 
+        {$set: {myLibaryBooksArray: req.body.LibaryArrayData
+        }},{new:true})
+
+        res.status(200).json(updatedUserLibary)
+    } catch (error) {
+        console.log(error, 'error')
+        res.status(500).json(error)
+    }
 })
 
 

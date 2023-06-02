@@ -148,12 +148,52 @@ router.delete('/removeTeam/:writerid/:userid', async(req, res) => {
 })
 
 
+router.patch('/acceptBookInvite/:bookid/:userid/', async (req, res) => {
+   
 
+    try {
+   
+    
+        // const content =  await Libary.find({'userid':req.params.userid})
+    
+        // console.log(content, 'content')
+
+        // console.log()
+    
+        const updatedUserLibary =  await Libary.findOneAndUpdate(
+            {'userid':req.params.userid, 'booksReceivedArray.bookData.bookid':req.params.bookid},
+            { $set: {'booksReceivedArray.$.Accepted': true } 
+         },{new:true}
+         )
+
+         console.log(updatedUserLibary, 'updaeUserLibary')
+
+         
+         res.status(200).json(updatedUserLibary)
+    
+    } catch (error) {
+        res.status(500)
+    }
+
+
+
+                      
+    
+    // const updateUserLibary = await Libary.findOneAndUpdate({'userid': req.params.userid}, {
+    //     $push: {booksReceivedArray: {
+    //         bookName:req.body.bookName,
+    //         From: req.body.senderData,
+    //         bookContent: req.body.bookData                               
+    //     }}
+    // })
+
+
+})
 
 //add writers to Books
 //Incoming
 
-router.put('/addWritersToBook/:bookid/:userid/', async (req, res) => {
+router.patch('/addWritersToBook/:bookid/:userid', async (req, res) => {
 
     const userLibary = await Libary.find({'userid': req.params.userid})
 
@@ -172,13 +212,12 @@ router.put('/addWritersToBook/:bookid/:userid/', async (req, res) => {
 
                     writersForBook.map(async(item) => {
 
-                        const writerData = await User.findById(item.writerid)
-
+                    try {          
                         const writerDatax = await Libary.findOneAndUpdate({'userid': item.writerid}, {
                             $push: {booksReceivedArray: {
                                 bookName:req.body.bookName,
                                 From: req.body.senderData,
-                                bookContent: req.body.bookData                               
+                                bookData: req.body.bookData                               
                             }}
                         })
 
@@ -193,9 +232,14 @@ router.put('/addWritersToBook/:bookid/:userid/', async (req, res) => {
                         // console.log(writersArray, 'writersArray')
 
                         if( writersArray.length == writersForBook.length){
-
                             resolve( writersArray)
                         }
+                        
+                    } catch (error) {
+                        res.status(500)
+                    }
+                    //  const writerData = await User.findById(item.writerid)
+
             
                 })
                 })
@@ -231,6 +275,8 @@ router.put('/addWritersToBook/:bookid/:userid/', async (req, res) => {
                      )
 
                     
+                     
+                    
                     // const updatedUserLibary = await Libary.findOneAndUpdate({'userid':req.params.userid, 'sharedBooks':req.params.bookid}, {$set:  {'sharedBooks.$[ele]': {
                     //     ...prevContent,
                     //     writers:[...prevContent.writers, ...data]
@@ -250,7 +296,7 @@ router.put('/addWritersToBook/:bookid/:userid/', async (req, res) => {
 
                                 
     
-            }).catch((error) => {
+            }) .catch((error) => {
                 res.status(500).json(error)
             })
             

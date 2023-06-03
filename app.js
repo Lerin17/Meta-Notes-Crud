@@ -97,6 +97,15 @@ io.on('connection', (socket) => {
         console.log(data, 'data')
     })
 
+    socket.on('textprosedata', ({value, socketRooms}) => {
+
+        // socket.broadcast.to('game').emit('message', 'nice game');
+
+        console.log('...receiving data')
+
+        socket.broadcast.to(socketRooms).emit('getprosedata', value)
+    })
+
     socket.on('joinroom', id => {
         console.log(id, 'iddd')
 
@@ -108,10 +117,12 @@ io.on('connection', (socket) => {
 
         socket.emit('roomsdata', 'rx')
 
-        
+      const roomsArray =  Array.from(socket.rooms)
+
+
 
         if(socket.rooms.has(id)){
-            socket.emit('roomsdata', {room:id}) 
+            socket.emit('roomsdata', {room:roomsArray}) 
         }
 
     //   const xe =  JSON.stringify(rooms)

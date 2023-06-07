@@ -93,36 +93,67 @@ app.use('/api/teams', teamRoute)
 io.on('connection', (socket) => {
     socket.emit('me', socket.id)
 
+    // setInterval(() => {
+    //     socket.emit('me', socket.id)
+    // }, 3000);
+
+
+
     socket.on('jam', data => {
         console.log(data, 'data')
+
+        // socket.join('truth')
     })
 
-    socket.on('textprosedata', ({value, socketRooms}) => {
+    socket.on('textprosedata',  ([operations, filteredRoomMemebers, senderid,  socketRooms]) => {
 
         // socket.broadcast.to('game').emit('message', 'nice game');
 
-        console.log('...receiving data')
+        console.log('...receiving data', operations)
 
-        socket.broadcast.to(socketRooms).emit('getprosedata', value)
+        console.log(socketRooms, 'filtered')
+
+        socket.to(socketRooms).emit('getprosedata', [operations, senderid])
+
+        // filteredRoomMemebers.map(item => {
+        //     io.to(item).emit('getprosedata', [operations, senderid])
+        // })        
     })
 
-    socket.on('joinroom', id => {
-        console.log(id, 'iddd')
+    // setTimeout(() => {
+    //     console.log(socket.rooms)
+    // }, 15000);
 
-        socket.join(id)
+    socket.on('joinroom', async (id) => {
+        console.log(id, '...join room')
+
+        const room = String(id)
+
+        socket.join(room)
 
         console.log(socket.rooms)
 
-        // const rooms = socket.rooms
+       
+        const x = await io.in(room).fetchSockets()
 
-        socket.emit('roomsdata', 'rx')
+        console.log(x, 'rawdata on join')
+
+        const idsOfRoomMembers = x.map(item => item.id)
 
       const roomsArray =  Array.from(socket.rooms)
 
+      
+        console.log()
 
 
-        if(socket.rooms.has(id)){
-            socket.emit('roomsdata', {room:roomsArray}) 
+        if(socket.rooms.has(String(id))){
+
+            console.log('socket has id')
+
+            console.log(idsOfRoomMembers, 'ids')
+
+            // socket.to(room).emit('getprosedata', [operations, senderid, idsOfRoomMembers])
+            socket.emit('roomsdata', [roomsArray, idsOfRoomMembers]) 
         }
 
     //   const xe =  JSON.stringify(rooms)

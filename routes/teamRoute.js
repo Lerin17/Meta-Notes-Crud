@@ -212,6 +212,8 @@ router.patch('/addWritersToBook/:bookid/:userid', async (req, res) => {
 
                     writersForBook.map(async(item) => {
 
+                    console.log(req)
+
                     try {          
                         const writerDatax = await Libary.findOneAndUpdate({'userid': item.writerid}, {
                             $push: {booksReceivedArray: {

@@ -18,6 +18,10 @@ const UserSchema = new mongoose.Schema({
     requestmessages: {
         type:Array,
         default:[]
+    },
+    localID:{
+        type:String,
+        unique:true
     }
 }
     )

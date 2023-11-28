@@ -105,6 +105,13 @@ io.on('connection', (socket) => {
         // socket.join('truth')
     })
 
+    socket.on('metaarraydata', ([metadata, socketRooms, senderid]) => {
+     
+        const room = String(socketRooms)
+        console.log(room, 'socketRooms')
+        socket.to(room).emit('$metaarraydata', [metadata,senderid ])
+    })
+
     socket.on('textprosedata',  ([operations, filteredRoomMemebers, senderid,  socketRooms]) => {
 
         // socket.broadcast.to('game').emit('message', 'nice game');
